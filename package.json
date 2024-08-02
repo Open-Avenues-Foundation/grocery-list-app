@@ -1,0 +1,24 @@
+{
+  "name": "grocery-list-app",
+  "version": "1.0.0",
+  "description": "This repository contains a `docker-compose.yml` file to set up a PostgreSQL database using Docker Compose. This setup will run a PostgreSQL container, which can be used for development and testing purposes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Open-Avenues-Foundation/grocery-list-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Open-Avenues-Foundation/grocery-list-app/issues"
+  },
+  "homepage": "https://github.com/Open-Avenues-Foundation/grocery-list-app#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}

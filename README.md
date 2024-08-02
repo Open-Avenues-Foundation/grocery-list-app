@@ -1,6 +1,6 @@
-# Docker Compose for PostgreSQL
+# Docker Compose for PostgreSQL and Express.js API
 
-This repository contains a `docker-compose.yml` file to set up a PostgreSQL database using Docker Compose. This setup will run a PostgreSQL container, which can be used for development and testing purposes.
+This repository contains a `docker-compose.yml` file to set up a PostgreSQL database and an Express.js API using Docker Compose. This setup will run both a PostgreSQL container and an API container, which can be used for development and testing purposes.
 
 ## Prerequisites
 
@@ -13,8 +13,8 @@ Before you start, ensure you have the following installed on your system:
 
 ### PostgreSQL
 
-- **Container Name:** `container-pg`
-- **Image:** `postgres`
+- **Container Name:** `db`
+- **Image:** `postgres:16`
 - **Hostname:** `localhost`
 - **Ports:** `5432:5432`
 - **Environment Variables:**
@@ -23,6 +23,21 @@ Before you start, ensure you have the following installed on your system:
   - `POSTGRES_DB`: `test_db`
 - **Volumes:**
   - `postgres-data:/var/lib/postgresql/data`
+- **Restart Policy:** `unless-stopped`
+
+### Express.js API
+
+- **Container Name:** `api`
+- **Image:** `node:14`
+- **Hostname:** `localhost`
+- **Ports:** `3000:3000`
+- **Environment Variables:**
+  - `DB_HOST`: `db`
+  - `DB_PORT`: `5432`
+  - `DB_USER`: `admin`
+  - `DB_PASSWORD`: `root`
+  - `DB_NAME`: `test_db`
+- **Depends On:** `db` (ensures that the PostgreSQL service is running before the API starts)
 - **Restart Policy:** `unless-stopped`
 
 ## Getting Started
@@ -34,19 +49,27 @@ Before you start, ensure you have the following installed on your system:
    cd <repository_directory>
    ```
 
-2. **Start the Services**
+2. **Build and Start the Services**
 
-   Run the following command to start the PostgreSQL container:
+   Run the following command to build and start both the PostgreSQL and Express.js API containers:
 
    ```sh
-   docker-compose up -d
+   docker-compose up --build -d
    ```
 
-   The `-d` flag runs the containers in detached mode.
+   The `--build` flag ensures that the Docker images are rebuilt, and the `-d` flag runs the containers in detached mode.
 
-3. **Access PostgreSQL**
+3. **Access the Express.js API**
 
-   Once the container is up and running, you can access the PostgreSQL database using any PostgreSQL client. Use the following credentials:
+   Once the containers are up and running, you can access the API at:
+
+   - **URL:** `http://localhost:3000/`
+
+   The API will be running and accessible on port `3000`. You can interact with the API using tools like `curl`, `Postman`, or directly in your browser.
+
+4. **Access PostgreSQL**
+
+   You can access the PostgreSQL database using any PostgreSQL client with the following credentials:
 
    - **Host:** `localhost`
    - **Port:** `5432`
@@ -54,7 +77,7 @@ Before you start, ensure you have the following installed on your system:
    - **Password:** `root`
    - **Database Name:** `test_db`
 
-4. **Stop the Services**
+5. **Stop the Services**
 
    To stop and remove the containers, networks, and volumes, run:
 
@@ -66,21 +89,23 @@ Before you start, ensure you have the following installed on your system:
 
 The PostgreSQL data is stored in a Docker volume named `postgres-data`. This ensures that your data persists even if the container is removed.
 
-## Restart Policy
-
-The `restart: unless-stopped` policy ensures that the PostgreSQL container will automatically restart unless it is explicitly stopped.
-
 ## Customization
 
-If you need to change any configuration, such as database credentials or port mappings, you can modify the `docker-compose.yml` file accordingly.
+If you need to change any configuration, such as database credentials, port mappings, or API settings, you can modify the `docker-compose.yml` file accordingly.
 
 ## Troubleshooting
 
-If you encounter any issues, you can check the logs of the PostgreSQL container by running:
+- **PostgreSQL Logs:** If you encounter any issues with PostgreSQL, check the logs by running:
 
-```sh
-docker-compose logs postgres
-```
+  ```sh
+  docker-compose logs db
+  ```
+
+- **API Logs:** If you encounter any issues with the API, check the logs by running:
+
+  ```sh
+  docker-compose logs api
+  ```
 
 ## License
 
