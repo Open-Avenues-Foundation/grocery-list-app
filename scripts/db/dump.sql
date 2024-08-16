@@ -1,5 +1,5 @@
 CREATE TABLE grocerylist (
-    itemid integer PRIMARY KEY,
+    itemid SERIAL PRIMARY KEY,
     itemname character varying(255) NOT NULL,
     quantity integer NOT NULL,
     unit character varying(50),

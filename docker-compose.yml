@@ -30,4 +30,7 @@ services:
       DB_USER: admin
       DB_PASSWORD: root
       DB_NAME: test_db
+    volumes:
+      - .:/app
+      - /app/node_modules 
     restart: unless-stopped
