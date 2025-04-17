@@ -1,10 +1,12 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req: express.Request, res: express.Response) => {
@@ -72,6 +74,15 @@ app.put('/grocery-lists/:id/items/:itemId/purchase', async (req: express.Request
   const item = await prisma.item.update({
     where: { id: parseInt(itemId) },
     data: { purchased: true },
+  });
+  res.json(item);
+});
+
+app.put('/grocery-lists/:id/items/:itemId/unpurchase', async (req: express.Request, res: express.Response) => {
+  const { id, itemId } = req.params;
+  const item = await prisma.item.update({
+    where: { id: parseInt(itemId) },
+    data: { purchased: false },
   });
   res.json(item);
 });
