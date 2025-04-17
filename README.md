@@ -1,138 +1,67 @@
-# Prisma Postgres Example: Queries, Connection Pooling & Caching
+# Grocery List Application
 
-This project contains a sample application demonstrating various capabilities and workflows of [Prisma Postgres](https://prisma.io/data-platform/postgres):
+A REST API built with Express, TypeScript, and Prisma for managing grocery lists and items.
 
-- Schema migrations and queries (via [Prisma ORM](https://www.prisma.io/orm))
-- Connection pooling and caching (via [Prisma Accelerate](https://prisma.io/data-platform/accelerate))
+## Getting Started
 
-## Getting started
-
-### 1. Set up a Prisma Postgres database in Prisma Data Platform
+### 1. Set up a Prisma Postgres database
 
 Follow these steps to create your Prisma Postgres database:
 
-1. Log in to [Prisma Data Platform](https://console.prisma.io/).
-1. In a [workspace](https://www.prisma.io/docs/platform/about#workspace) of your choice, click the **New project** button.
-1. Type a name for your project in the **Name** field, e.g. **hello-ppg**.
-1. In the **Prisma Postgres** section, click the **Get started** button.
-1. In the **Region** dropdown, select the region that's closest to your current location, e.g. **US East (N. Virginia)**.
-1. Click the **Create project** button.
+1. Log in to [Prisma Data Platform](https://console.prisma.io/)
+2. Create a new project and set up a Postgres database
+3. Copy your `DATABASE_URL` for the next steps
 
-At this point, you'll be redirected to the **Database** page where you will need to wait a few seconds while the status of your database changes from **`PROVISIONING`**, to **`ACTIVATING`** to **`CONNECTED`**.
+### 2. Installation
 
-Once the green **`CONNECTED`** label appears, your database is ready to use!
+Clone the repository and install dependencies:
 
-Then, find your database credentials in the **Set up database access** section, copy the `DATABASE_URL` environment variable and store it securely.
-
-```bash no-copy
-DATABASE_URL=<your-database-url>
-```
-
-> These `DATABASE_URL` environment variable will be required in the next steps.
-
-Once that setup process has finished, move to the next step.
-
-### 2. Download example and install dependencies
-
-Copy the `try-prisma` command that', paste it into your terminal, and execute it:
-
-```terminal
-npx try-prisma@latest \
-  --template databases/prisma-postgres \
-  --name hello-prisma \
-  --install npm
-```
-
-<!-- For reference, this is what the command looks like (note that the `__YOUR_DATABASE_CONNECTION_STRING__` placeholder must be replaced with _your_ actual database connection string):
-
-```
-npx try-prisma@latest
-  --template databases/prisma-postgres
-  --connection-string __YOUR_DATABASE_CONNECTION_STRING__
-  --name hello-prisma
-  --install npm
-```
-
-Your connection string that should replace the `__YOUR_DATABASE_CONNECTION_STRING__` placeholder looks similar to this: `prisma+postgres://accelerate.prisma-data.net/?api_key=ey...`
--->
-
-Navigate into the project directory and (if you haven't done so via the CLI wizard) install dependencies:
-
-```terminal
-cd hello-prisma
+```bash
 npm install
 ```
 
-### 3. Set database connection
+### 3. Environment Setup
 
-The connection to your database is configured via environment variables in a `.env` file.
-
-First, rename the existing `.env.example` file to just `.env`:
-
-```terminal
-mv .env.example .env
-```
-
-Then, find your database credentials in the **Set up database access** section, copy the `DATABASE_URL` environment variable and paste them into the `.env` file.
-
-For reference, the file should now look similar to this:
+Create a `.env` file in the root directory:
 
 ```bash
-DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=ey...."
+DATABASE_URL="your-database-url-here"
+PORT=4000 # optional, defaults to 4000
 ```
 
-### 4. Create database tables (with a schema migration)
+### 4. Database Setup
 
-Next, you need to create the tables in your database. You can do this by creating and executing a schema migration with the following command of the Prisma CLI:
+Create the database tables by running:
 
-```terminal
+```bash
 npx prisma migrate dev --name init
 ```
 
-This will map the `User` and `Post` models that are defined in your [Prisma schema](./prisma/schema.prisma) to your database. You can also review the SQL migration that was executed and created the tables in the newly created `prisma/migrations` directory.
+### 5. Running the Server
 
-### 5. Execute queries with Prisma ORM
-
-The [`src/queries.ts`](./src/queries.ts) script contains a number of CRUD queries that will write and read data in your database. You can execute it by running the following command in your terminal:
-
-```terminal
-npm run queries
+Development mode with hot reload:
+```bash
+npm run server
 ```
 
-Once the script has completed, you can inspect the logs in your terminal or use Prisma Studio to explore what records have been created in the database:
+## API Endpoints
 
-```terminal
-npx prisma studio
-```
+### Grocery Lists
+- `GET /grocery-lists` - Get all grocery lists
+- `POST /grocery-lists` - Create a new grocery list
+- `GET /grocery-lists/:id` - Get a specific grocery list
 
-### 6. Explore caching with Prisma Accelerate
+### Items
+- `GET /grocery-lists/:id/items` - Get all items in a list
+- `POST /grocery-lists/:id/items` - Add an item to a list
+- `PUT /grocery-lists/:id/items/:itemId` - Update an item
+- `DELETE /grocery-lists/:id/items/:itemId` - Delete an item
+- `PUT /grocery-lists/:id/items/:itemId/purchase` - Mark item as purchased
+- `PUT /grocery-lists/:id/items/:itemId/unpurchase` - Mark item as unpurchased
 
-The [`src/caching.ts`](./src/caching.ts) script contains a sample query that uses [Stale-While-Revalidate](https://www.prisma.io/docs/accelerate/caching#stale-while-revalidate-swr) (SWR) and [Time-To-Live](https://www.prisma.io/docs/accelerate/caching#time-to-live-ttl) (TTL) to cache a database query using Prisma Accelerate. You can execute it as follows:
+## Technologies Used
 
-```terminal
-npm run caching
-```
-
-Take note of the time that it took to execute the query, e.g.:
-
-```terminal
-The query took 2009.2467149999998ms.
-```
-
-Now, run the script again:
-
-```terminal
-npm run caching
-```
-
-You'll notice that the time the query took will be a lot shorter this time, e.g.:
-
-```terminal
-The query took 300.5655280000001ms.
-```
-
-## Next steps
-
-- Check out the [Prisma docs](https://www.prisma.io/docs)
-- Share your feedback on the [Prisma Discord](https://pris.ly/discord/)
-- Create issues and ask questions on [GitHub](https://github.com/prisma/prisma/)
+- Express.js
+- TypeScript
+- Prisma ORM
+- PostgreSQL
